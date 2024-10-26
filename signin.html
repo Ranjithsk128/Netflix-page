@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streamflix - Sign In</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/validator/13.6.0/validator.min.js"></script>
+    <style>
+        /* Previous styles remain the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('/api/placeholder/1920/1080') center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .signin-container {
+            background: rgba(0, 0, 0, 0.75);
+            border-radius: 4px;
+            padding: 60px 68px 40px;
+            min-width: 380px;
+            max-width: 450px;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .logo {
+            color: #e50914;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 28px;
+            text-align: left;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 50px;
+            border-radius: 4px;
+            border: none;
+            background: #333;
+            color: white;
+            padding: 16px 20px;
+            font-size: 16px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            background: #454545;
+        }
+
+        .form-label {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            color: #8c8c8c;
+            transition: all 0.2s ease;
+            pointer-events: none;
+        }
+
+        .form-control:focus+.form-label,
+        .form-control:not(:placeholder-shown)+.form-label {
+            top: 0;
+            font-size: 12px;
+            transform: translateY(-50%);
+            background: #333;
+            padding: 0 5px;
+        }
+
+        .btn-signin {
+            width: 100%;
+            height: 48px;
+            background: #e50914;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 24px 0 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-signin:hover {
+            background: #f40612;
+        }
+
+        .btn-signin:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        .helper-text {
+            color: #8c8c8c;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+
+        .error-message {
+            color: #e87c03;
+            font-size: 13px;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            color: #8c8c8c;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+        }
+
+        .signup-link {
+            color: white;
+            text-decoration: none;
+            margin-left: 4px;
+        }
+
+        .signup-link:hover {
+            text-decoration: underline;
+        }
+
+        /* New styles for success popup */
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.7);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .popup.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .popup-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #28a745;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .popup-icon::before {
+            content: '✓';
+            font-size: 32px;
+            color: white;
+        }
+
+        .popup-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .popup-message {
+            font-size: 16px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .btn-signin-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 740px) {
+            .signin-container {
+                padding: 30px 20px;
+                min-width: 100%;
+                margin: 0;
+            }
+
+            .popup {
+                width: 90%;
+                max-width: 300px;
+            }
+        
+        }
+        body{
+    background: linear-gradient(rgba(0, 0, 0, 0.7),
+            rgba(0, 0, 0, 0.7)), url('https://th.bing.com/th/id/OIP.Mab0jXnIpgN2bozio2PsdwHaEK?rs=1&pid=ImgDetMain') no-repeat center center;
+    background-size: cover;
+    min-height: 100vh;
+    position: relative;
+}
+.header {
+    padding: 20px 0;
+    width: 100%;
+}
+
+.logo {
+    margin-left: 20px;
+}
+
+.netflix-logo {
+    width: 167px;
+    height: 45px;
+    fill-rule: nonzero;
+}
+
+.signin-container {
+    max-width: 450px;
+    margin: 0 auto;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 4px;
+}
+        
+    </style>
+</head>
+
+<body>
+    <div class="signin-container">
+        <div class="header">
+            <div class="logo">
+                <svg viewBox="0 0 111 30" class="netflix-logo" focusable="false">
+                    <g id="netflix-logo">
+                        <path
+                            d="M105.06233,14.2806261 L110.999156,30 C109.249227,29.7497422 107.500234,29.4366857 105.718437,29.1554972 L102.374168,20.4686475 L98.9371075,28.4375293 C97.2499766,28.1563408 95.5928391,28.061674 93.9057081,27.8432843 L99.9372012,14.0931671 L94.4680851,-5.68434189e-14 L99.5313525,-5.68434189e-14 L102.593495,7.87421502 L105.874965,-5.68434189e-14 L110.999156,-5.68434189e-14 L105.06233,14.2806261 Z M90.4686475,-5.68434189e-14 L85.8749649,-5.68434189e-14 L85.8749649,27.2499766 C87.3746368,27.3437061 88.9371075,27.4055675 90.4686475,27.5930265 L90.4686475,-5.68434189e-14 Z M81.9055207,26.93692 C77.7186241,26.6557316 73.5307901,26.4064111 69.250164,26.3117443 L69.250164,-5.68434189e-14 L73.9366389,-5.68434189e-14 L73.9366389,21.8745899 C76.6248008,21.9373887 79.3120255,22.1557784 81.9055207,22.2804387 L81.9055207,26.93692 Z M64.2496954,10.6561065 L64.2496954,15.3435186 L57.8442216,15.3435186 L57.8442216,25.9996251 L53.2186709,25.9996251 L53.2186709,-5.68434189e-14 L66.3436123,-5.68434189e-14 L66.3436123,4.68741213 L57.8442216,4.68741213 L57.8442216,10.6561065 L64.2496954,10.6561065 Z M45.3435186,4.68741213 L45.3435186,26.2498828 C43.7810479,26.2498828 42.1876465,26.2498828 40.6561065,26.3117443 L40.6561065,4.68741213 L35.8121661,4.68741213 L35.8121661,-5.68434189e-14 L50.2183897,-5.68434189e-14 L50.2183897,4.68741213 L45.3435186,4.68741213 Z M30.749836,15.5928391 C28.687787,15.5928391 26.2498828,15.5928391 24.4999531,15.6875059 L24.4999531,22.6562939 C27.2499766,22.4678976 30,22.2495079 32.7809542,22.1557784 L32.7809542,26.6557316 L19.812541,27.6876933 L19.812541,-5.68434189e-14 L32.7809542,-5.68434189e-14 L32.7809542,4.68741213 L24.4999531,4.68741213 L24.4999531,10.9991564 C26.3126816,10.9991564 29.0936358,10.9054269 30.749836,10.9054269 L30.749836,15.5928391 Z M4.78114163,12.9684132 L4.78114163,29.3429562 C3.09401069,29.5313525 1.59340144,29.7497422 0,30 L0,-5.68434189e-14 L4.4690224,-5.68434189e-14 L10.562377,17.0315868 L10.562377,-5.68434189e-14 L15.2497891,-5.68434189e-14 L15.2497891,28.061674 C13.5935889,28.3437998 11.906458,28.4375293 10.1246602,28.6868498 L4.78114163,12.9684132 Z"
+                            fill="#e50914" />
+                    </g>
+                </svg>
+            </div>
+        </div>
+        <form id="signinForm" novalidate>
+            <div class="form-group">
+                <input type="email" class="form-control" id="email" placeholder=" " required>
+                <label class="form-label" for="email">Email or phone number</label>
+                <div class="error-message" id="emailError"></div>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" id="password" placeholder=" " required>
+                <label class="form-label" for="password">Password</label>
+                <div class="error-message" id="passwordError"></div>
+            </div>
+            <button type="submit" class="btn-signin">
+                <div class="btn-signin-content">
+                    <div class="loading-spinner"></div>
+                    <span>Sign In</span>
+                </div>
+            </button>
+            <div class="remember-me">
+                <input type="checkbox" id="remember">
+                <label for="remember">Remember me</label>
+            </div>
+            <div class="helper-text">
+                New to Streamflix?
+                <a href="#" class="signup-link">Sign up now</a>
+            </div>
+        </form>
+    </div>
+    <!-- Success Popup -->
+    <div class="popup" id="successPopup">
+        <div class="popup-icon"></div>
+        <h2 class="popup-title">Sign In Successful!</h2>
+        <p class="popup-message">Welcome back to Netflix</p>
+    </div>
+
+    <script>
+        // Store form elements
+        const form = document.getElementById('signinForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const rememberCheckbox = document.getElementById('remember');
+        const submitButton = document.querySelector('.btn-signin');
+        const spinner = document.querySelector('.loading-spinner');
+        const successPopup = document.getElementById('successPopup');
+
+        // Check if user is already signed in
+        window.onload = function () {
+            const rememberedUser = localStorage.getItem('rememberedUser');
+
+            if (rememberedUser) {
+                const userData = JSON.parse(rememberedUser);
+                emailInput.value = userData.email;
+                rememberCheckbox.checked = true;
+            }
+        };
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+
+            // Reset errors
+            emailError.style.display = 'none';
+            passwordError.style.display = 'none';
+
+            let isValid = true;
+
+            // Email validation
+            if (!emailInput.value) {
+                emailError.textContent = 'Please enter a valid email or phone number.';
+                emailError.style.display = 'block';
+                isValid = false;
+            } else if (!validator.isEmail(emailInput.value) && !validator.isMobilePhone(emailInput.value)) {
+                emailError.textContent = 'Please enter a valid email or phone number.';
+                emailError.style.display = 'block';
+                isValid = false;
+            }
+
+            // Password validation
+            if (!passwordInput.value) {
+                passwordError.textContent = 'Your password must contain between 4 and 60 characters.';
+                passwordError.style.display = 'block';
+                isValid = false;
+            } else if (passwordInput.value.length < 4 || passwordInput.value.length > 60) {
+                passwordError.textContent = 'Your password must contain between 4 and 60 characters.';
+                passwordError.style.display = 'block';
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Show loading state
+                submitButton.disabled = true;
+                spinner.style.display = 'block';
+
+                try {
+                    // Simulate API call
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+
+                    // Handle remember me
+                    if (rememberCheckbox.checked) {
+                        localStorage.setItem('rememberedUser', JSON.stringify({
+                            email: emailInput.value
+                        }));
+                    } else {
+                        localStorage.removeItem('rememberedUser');
+                    }
+
+                    // Show success popup
+                    successPopup.classList.add('show');
+
+                    // Wait for animation
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+
+                    // Store user data in sessionStorage for the homepage
+                    sessionStorage.setItem('currentUser', JSON.stringify({
+                        email: emailInput.value,
+                        username: emailInput.value.split('@')[0]
+                    }));
+
+                    // Redirect to index.html
+                    window.location.href = 'index.html';
+
+                } catch (error) {
+                    console.error('Sign in error:', error);
+                    // Handle error case
+                } finally {
+                    // Reset loading state
+                    submitButton.disabled = false;
+                    spinner.style.display = 'none';
+                }
+            }
+        });
+
+        // Handle input animations
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('focus', function () {
+                this.parentElement.classList.add('focused');
+            });
+
+            input.addEventListener('blur', function () {
+                if (!this.value) {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
