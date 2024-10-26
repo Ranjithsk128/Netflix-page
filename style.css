@@ -48,7 +48,8 @@ body {
 /* Hero Section */
 .hero-section {
     background: linear-gradient(rgba(0, 0, 0, 0.7),
-            rgba(0, 0, 0, 0.7)), url('https://th.bing.com/th/id/OIP.Mab0jXnIpgN2bozio2PsdwHaEK?rs=1&pid=ImgDetMain') no-repeat center center;
+            rgba(0, 0, 0, 0.7)), 
+            url('https://th.bing.com/th/id/OIP.Mab0jXnIpgN2bozio2PsdwHaEK?rs=1&pid=ImgDetMain') no-repeat center center;
     background-size: cover;
     min-height: 100vh;
     position: relative;
@@ -69,13 +70,31 @@ body {
 .hero-subtitle {
     color: bisque;
     font-size: 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2.5rem;
 }
 
 /* Email Signup */
 .email-signup {
     max-width: 600px;
     margin: 0 auto;
+    display: flex;
+    gap: 10px;
+    padding: 0 15px;
+}
+
+.email-signup-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.email-input-wrapper {
+    flex: 1;
+    min-width: 300px;
+    position: relative;
 }
 
 .email-input {
@@ -83,19 +102,61 @@ body {
     border: 1px solid #8c8c8c;
     color: var(--text-color);
     height: 60px;
+    width: 100%;
+    padding: 0 20px;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.email-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
 }
 
 .get-started-btn {
     background-color: var(--primary-color);
     color: var(--text-color);
     height: 60px;
-    border-radius: 60px;
+    border-radius: 4px;
     font-size: 1.5rem;
     padding: 0 2rem;
     transition: background-color 0.3s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    min-width: 183px;
 }
+
 .get-started-btn:hover {
     background-color: var(--hover-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .email-signup-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .email-input-wrapper {
+        width: 100%;
+    }
+    
+    .get-started-btn {
+        width: 100%;
+        margin-top: 10px;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
 }
 
 /* Trending Section */
